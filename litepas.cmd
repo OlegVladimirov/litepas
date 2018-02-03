@@ -1,4 +1,4 @@
-echo ""; # & cls & powershell -ex bypass -nop "gc .\%~nx0 | Out-String | iex" & exit
+echo ""; # & cls & powershell -sta -ex bypass -nop "gc .\%~nx0 | Out-String | iex" & exit
 #    --- begin parameters ------------------------------------------------------
 #    Don't use <# multiline powershell comment #>.
 $salt = 'uYg67$%96)#&ZxDdh';
@@ -69,9 +69,9 @@ Function GetPassword ($pMasterPasswordSecure, $pUsernameAtService, $pSalt) {
       }
       # Let's shift codes to actual range
       $letter += 65;
-      if($letter -in 91 .. 96) {$letter -= 43}; # 48 .. 53
+      if(91 .. 96 -contains $letter) {$letter -= 43}; # 48 .. 53
       if($letter -ge 123) {$letter -= 69}; # 58 .. 63 => 123 .. 128 => 54 .. 59
-      if($letter -in 58 .. 59) {$letter = 95};
+      if(58 .. 59 -contains $letter) {$letter = 95};
       $allLetters += [char] $letter;
    }
    $allLetters;
@@ -187,8 +187,8 @@ function Main() {
 
       if(
          ($input.split(' ')[2] -ne $null) -or `
-         (($inpAction -in ':quit', ':masterpassword') -and ($inpUsernameAtService -ne $null)) -or `
-         (($inpAction -in ':drop', ':get', ':lite', ':put') -and ($inpUsernameAtService -eq $null))
+         ((':quit', ':masterpassword' -contains $inpAction) -and ($inpUsernameAtService -ne $null)) -or `
+         ((':drop', ':get', ':lite', ':put' -contains $inpAction) -and ($inpUsernameAtService -eq $null))
       ) {
          $inpAction = ':unknown'
       }
